@@ -1,0 +1,59 @@
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: flyserb
+      POSTGRES_PASSWORD: '112233'
+      POSTGRES_DB: flyserb_interview
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  save-service:
+    build:
+      context: ./save-user
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: flyserb
+      POSTGRES_PASSWORD: '112233'
+      POSTGRES_DB: flyserb_interview
+      RABBITMQ_URL: amqp://rabbitmq:5672
+    depends_on:
+      - postgres
+      - rabbitmq
+    ports:
+      - "3001:3001"
+
+  email-service:
+    build:
+      context: ./mailer-service
+    environment:
+      RABBITMQ_URL: amqp://rabbitmq:5672
+      SMTP_HOST: smtp.gmail.com
+      SMTP_PORT: 587
+      SMTP_FROM: iammudassarnaveed1@gmail.com
+      SMTP_PASS: fdloknwosypvxkrb
+    depends_on:
+      - rabbitmq
+
+  frontend:
+    build:
+      context: ./frontend
+    environment:
+      NEXT_PUBLIC_SAVE_URL: http://save-service:3001
+    ports:
+      - "3000:3000"
+    depends_on:
+      - save-service
+
+volumes:
+  pgdata:
