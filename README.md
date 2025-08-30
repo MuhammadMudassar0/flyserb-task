@@ -19,14 +19,26 @@ Supporting services:
 ## Folder Structure
 
 .
-├── docker-compose.yml
-├── README.md
-├── frontend
-│   └── ... (Next.js app)
-├── mailer-service
-│   └── ... (NestJS mailer microservice)
-└── save-user
-    └── ... (NestJS save-user microservice)
+├── docker-compose.yml          # Docker Compose configuration to run all services
+├── README.md                   # Project documentation
+├── frontend/                   # Next.js frontend application
+│   ├── Dockerfile
+│   ├── package.json
+│   ├── tsconfig.json
+│   ├── public/
+│   └── src/
+├── mailer-service/             # NestJS microservice for sending emails
+│   ├── Dockerfile
+│   ├── package.json
+│   ├── tsconfig.json
+│   ├── src/
+│   └── test/
+└── save-user/                  # NestJS microservice for saving user data
+    ├── Dockerfile
+    ├── package.json
+    ├── tsconfig.json
+    ├── src/
+    └── test/
 
 ## Environment Variables
 
